@@ -17,8 +17,8 @@ public class tetrisGameLogic
      */
     public boolean isColliding(Tetronimo tetronimo,  ArrayList<Tetronimo> tetronimosOnTheBoard)
     {
-        //Colliding on Y-axis
-        if (isCollidingOnYAxis(tetronimo, tetronimosOnTheBoard))
+        //Is Colliding with other tetronimos - just doing stacking - need to do side to side
+        if (isCollidingWithOtherTetronimos(tetronimo, tetronimosOnTheBoard))
         {
             return true;
         }
@@ -69,13 +69,13 @@ public class tetrisGameLogic
         pauseGame = false;
     }
 
-    public boolean isCollidingOnYAxis(Tetronimo tetronimo,  ArrayList<Tetronimo> tetronimosOnTheBoard)
+    public boolean isCollidingWithOtherTetronimos(Tetronimo tetronimo,  ArrayList<Tetronimo> tetronimosOnTheBoard)
     {
         for (int i = 0; i < tetronimosOnTheBoard.size(); i++)
         {
             Tetronimo tetronimoFromArrayList = tetronimosOnTheBoard.get(i);
-            if (tetronimo.collision_getBottomEdgeOfTetronimo() == (tetronimoFromArrayList.collision_getTopEdgeOfTetronimo() - Tetronimo.SIZE)
-            && tetronimo.collision_getRightEdgeOfTetronimo() > tetronimoFromArrayList.collisions_getLeftEdgeOfTetronimo())
+            if (tetronimo.collision_getLowestTetronimoRectangleEdge(tetronimo.tetronimoRectangleArrayList)
+                    == tetronimoFromArrayList.collision_getHighestTetronimoRectangleEdge(tetronimoFromArrayList.tetronimoRectangleArrayList))
             {
                 return true;
             }
