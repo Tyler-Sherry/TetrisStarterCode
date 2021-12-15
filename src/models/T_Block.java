@@ -14,7 +14,7 @@ public class T_Block extends Tetronimo
         super.r3.setLocation( 0, Tetronimo.SIZE * 2 );
         super.r4.setLocation( Tetronimo.SIZE, Tetronimo.SIZE );
 
-        r1.setColor(Color.RED);
+        r1.setColor(Color.CYAN);
         r2.setColor(Color.CYAN);
         r3.setColor(Color.CYAN);
         r4.setColor(Color.CYAN);

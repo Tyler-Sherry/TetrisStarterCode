@@ -39,8 +39,7 @@ public class TetrisController
         Tetronimo tetronimo;
 
         //Generate random tetronimo
-        // *** TESTING *** When done take out T_Block below - tetronimo = getRandomTetronimo();
-        tetronimo = new T_Block();
+        tetronimo = getRandomTetronimo();
 
         //Display next tetronimo upcoming in window
 
@@ -100,7 +99,11 @@ public class TetrisController
         }
 
         //Next function to check if tetronimo landed on another tetronimo
-
+        if(isTetronimoRectangleBelow(tetronimo))
+        {
+            addTetronimoRectanglesLandedToGrid(tetronimo);
+            return true;
+        }
 
 
 
@@ -119,11 +122,52 @@ public class TetrisController
         }
     }
 
+    public void displayTetronimoRectanglesOnTheBoardThatAreMoving()
+    {
+        for (int i = 0; i < 24; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                if (this.movingGridOfTetronimoRectangles[i][j] != null)
+                {
+                    System.out.println("There is a tetronimo rectangle at: [" + i + "] " + "[" + j + "]");
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to track the tetronimo rectangles moving down the board and to detect
+     * if any of the tetronimo rectangles collide with tetronimo rectangles already on
+     * the board
+     * @param tetronimoMoving
+     * @return
+     */
+    public boolean isTetronimoRectangleBelow(Tetronimo tetronimoMoving)
+    {
+        //Get the tetronimo rectangles making up the tetronimo
+        for (int i = 0; i < tetronimoMoving.tetronimoRectangleArrayList.size(); i++)
+        {
+            TetronimoRectangle tetronimoRectangle = tetronimoMoving.tetronimoRectangleArrayList.get(i);
+            int colPosition = (tetronimoRectangle.getCenterX() - 40) / 20;
+            int rowPosition = tetronimoRectangle.getCenterY() / 20;
+            System.out.println("The tetronimo rectangles are at [" + rowPosition + "] [" + colPosition + "]");
+            System.out.println("Next row down is [" + (rowPosition + 1) + "] [" + colPosition + "]");
+
+            //Now check if there are any tetronimo rectangles currently on the board that have landed in the next row down
+            if (landedGridOfTetronimoRectangles[(rowPosition + 1)][colPosition] != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
-
-
-
+    /**
+     * Method to keep track of the tetronimo rectangles that have landed on the board
+     * @param tetronimoLanded
+     */
     public void addTetronimoRectanglesLandedToGrid(Tetronimo tetronimoLanded)
     {
         for (int i = 0; i < tetronimoLanded.tetronimoRectangleArrayList.size(); i++)
@@ -152,15 +196,6 @@ public class TetrisController
         }
     }
 
-    public boolean isTetronimoRectangleBelow(Tetronimo tetronimoLanded)
-    {
-        //Get current position of tetronimo on the board
 
-        //Check if there is another tetronimo rectangle below on the next row in next column
-
-        //Make sure not to check past row and get out of bounds array - should be caught by if check for hasLanded on bottom
-
-        return false;
-    }
 
 }

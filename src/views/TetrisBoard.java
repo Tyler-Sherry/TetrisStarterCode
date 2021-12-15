@@ -101,8 +101,7 @@ public class TetrisBoard implements KeyListener
 
                     // *** TESTING OUTPUT ***
 
-                    //System.out.println("The top edge of r1 is : " + (tetronimo.r1.getBounds().y + 2));
-                    System.out.println("The middle of r1 is: " + tetronimo.r1.getCenter());
+                    CONTROLLER.displayTetronimoRectanglesOnTheBoardThatAreMoving();
 
 
                 }
