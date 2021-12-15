@@ -13,6 +13,7 @@ public class TetronimoRectangle extends Rectangle
 
     public TetronimoRectangle()
     {
+        this.setSize(SIZE, SIZE);
         this.topEdge = getYLocation();
         this.bottomEdge = getYLocation() + SIZE;
         this.leftEdge = getXLocation();

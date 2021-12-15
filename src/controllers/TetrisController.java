@@ -16,10 +16,13 @@ import java.util.Random;
 public class TetrisController
 {
     private final TetrisBoard TETRIS_BOARD;
+    public ArrayList<Tetronimo> tetronimosOnTheBoardThatHaveLanded = new ArrayList<>();
+    public ArrayList<TetronimoRectangle> tetronimoRectangleArrayList = new ArrayList<>();
+    public TetronimoRectangle[][] landedGridOfTetronimoRectangles = new TetronimoRectangle[24][10];
+    public TetronimoRectangle[][] movingGridOfTetronimoRectangles = new TetronimoRectangle[24][10];
 
     /**
      * Constructor to take in a tetris board so the controller and the board can communciate
-     *
      * @param tetrisBoard A tetris board instance
      */
     public TetrisController( TetrisBoard tetrisBoard )
@@ -28,8 +31,7 @@ public class TetrisController
     }
 
     /**
-     * Randomly chooses the next tetronimo and returns it (INCOMPLETE)
-     *
+     * Randomly chooses the next tetronimo and returns it
      * @return The next tetronimo to be played
      */
     public Tetronimo getNextTetromino()
@@ -37,13 +39,47 @@ public class TetrisController
         Tetronimo tetronimo;
 
         //Generate random tetronimo
-        tetronimo = getRandomTetronimo();
-
+        // *** TESTING *** When done take out T_Block below - tetronimo = getRandomTetronimo();
+        tetronimo = new T_Block();
 
         //Display next tetronimo upcoming in window
 
         tetronimo.setLocation( 40 + (5 * Tetronimo.SIZE), 0 );
 
+        return tetronimo;
+    }
+
+    public Tetronimo getRandomTetronimo()
+    {
+        Tetronimo tetronimo = null;
+        Random rand = new Random();
+        int upperBound = 7;
+        int int_random = rand.nextInt(upperBound);
+
+        switch (int_random)
+        {
+            case 0:
+                tetronimo = new I_Block();
+                break;
+            case 1:
+                tetronimo = new J_Block();
+                break;
+            case 2:
+                tetronimo = new L_Block();
+                break;
+            case 3:
+                tetronimo = new O_Block();
+                break;
+            case 4:
+                tetronimo = new S_Block();
+                break;
+            case 5:
+                tetronimo = new T_Block();
+                break;
+            case 6:
+                tetronimo = new Z_Block();
+                break;
+        }
         return tetronimo;
     }
 
@@ -53,11 +89,13 @@ public class TetrisController
      * @param tetronimo The tetronimo to evaluate
      * @return True if the tetronimo has landed (on the bottom of the board or another tetronimo), false if it has not
      */
-    public boolean hasTetronimoLanded(Tetronimo tetronimo,  ArrayList<Tetronimo> tetronimosOnTheBoard )
+    public boolean hasTetronimoLanded(Tetronimo tetronimo)
     {
         //First function to check if hit bottom of board
         if (tetronimo.collision_getBottomEdgeOfTetronimo() == 460)
         {
+            addTetronimoRectanglesLandedToGrid(tetronimo);
+            displayTetronimoRectanglesOnTheBoardThatHaveLanded();
             return true;
         }
 
@@ -70,40 +108,59 @@ public class TetrisController
 
     }
 
-    public Tetronimo getRandomTetronimo()
+    public void addTetronimoRectanglesMovingToGrid(Tetronimo tetronimoMoving)
     {
-        Tetronimo tetronimo = null;
-//        Random rand = new Random();
-//        int upperBound = 7;
-//        int int_random = rand.nextInt(upperBound);
-//
-//        switch (int_random)
-//        {
-//            case 0:
-//                tetronimo = new I_Block();
-//                break;
-//            case 1:
-//                tetronimo = new J_Block();
-//                break;
-//            case 2:
-//                tetronimo = new L_Block();
-//                break;
-//            case 3:
-//                tetronimo = new O_Block();
-//                break;
-//            case 4:
-//                tetronimo = new S_Block();
-//                break;
-//            case 5:
-//                tetronimo = new T_Block();
-//                break;
-//            case 6:
-//                tetronimo = new Z_Block();
-//                break;
-//        }
-
-        tetronimo = new T_Block();
-
-        return tetronimo;
+        for (int i = 0; i < tetronimoMoving.tetronimoRectangleArrayList.size(); i++)
+        {
+            TetronimoRectangle tetronimoRectangle = tetronimoMoving.tetronimoRectangleArrayList.get(i);
+            int colPosition = (tetronimoRectangle.getCenterX() - 40) / 20;
+            int rowPosition = tetronimoRectangle.getCenterY() / 20;
+            this.movingGridOfTetronimoRectangles[rowPosition][colPosition] = tetronimoRectangle;
+        }
     }
+
+
+
+
+
+
+    public void addTetronimoRectanglesLandedToGrid(Tetronimo tetronimoLanded)
+    {
+        for (int i = 0; i < tetronimoLanded.tetronimoRectangleArrayList.size(); i++)
+        {
+        TetronimoRectangle tetronimoRectangle = tetronimoLanded.tetronimoRectangleArrayList.get(i);
+        int colPosition = (tetronimoRectangle.getCenterX() - 40) / 20;
+        int rowPosition = tetronimoRectangle.getCenterY() / 20;
+        this.landedGridOfTetronimoRectangles[rowPosition][colPosition] = tetronimoRectangle;
+        }
+
+        //Call function to remove landed tetronimo rectangles from moving grid
+        //Basically cycle through moving grid and make to all null pointers
+    }
+
+    public void displayTetronimoRectanglesOnTheBoardThatHaveLanded()
+    {
+        for (int i = 0; i < 24; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                if (this.landedGridOfTetronimoRectangles[i][j] != null)
+                {
+                    System.out.println("There is a tetronimo rectangle at: [" + i + "] " + "[" + j + "]");
+                }
+            }
+        }
+    }
+
+    public boolean isTetronimoRectangleBelow(Tetronimo tetronimoLanded)
+    {
+        //Get current position of tetronimo on the board
+
+        //Check if there is another tetronimo rectangle below on the next row in next column
+
+        //Make sure not to check past row and get out of bounds array - should be caught by if check for hasLanded on bottom
+
+        return false;
+    }
+
 }

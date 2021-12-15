@@ -31,7 +31,11 @@ public abstract class Tetronimo extends ShapeGroup
 
     public ArrayList<TetronimoRectangle> tetronimoRectangleArrayList = new ArrayList<>();
 
-    
+    /**
+     * Collision profile for tetronimo
+     */
+    public int collision_leadingEdgeYAxis;
+
     /**
      * Generates the four rectangles for the tetronino and puts them on the screen, they are at the default coordinates
      * to start
@@ -219,4 +223,50 @@ public abstract class Tetronimo extends ShapeGroup
         }
         return highestTestronimoRectangleEdge - SIZE;
     }
+
+    /**
+     * COLLISION LOGIC
+     * The method breaks apart the tetronimo into individual rectangles and
+     * @return the most right edge of the tetronimo rectangles
+     */
+    public int collision_getMostRightTetronimoRectangleEdge(ArrayList<TetronimoRectangle> tetronimoRectangleArrayList)
+    {
+        int MostRightTetronimoRectangleEdge = 0;
+
+        for (int i = 0; i < tetronimoRectangleArrayList.size(); i++)
+        {
+            TetronimoRectangle tetronimoRectangle = tetronimoRectangleArrayList.get(i);
+            if (tetronimoRectangle.getRightEdge() > MostRightTetronimoRectangleEdge)
+            {
+                MostRightTetronimoRectangleEdge = tetronimoRectangle.getRightEdge();
+            }
+        }
+        return MostRightTetronimoRectangleEdge;
+    }
+
+
+    public boolean isThereTetronimoRectangleBelow(ArrayList<Tetronimo> tetronimosOnTheBoard)
+    {
+        ArrayList<TetronimoRectangle> tetronimoRectanglesOnTheBoardArrayList = new ArrayList<>();
+
+        //Take the tetronimo rectangles from the tetronimos currently on the board and add to the array list
+        for (int i = 0; i < tetronimosOnTheBoard.size(); i++)
+        {
+            Tetronimo tetronimoToStripOfRectangles = tetronimosOnTheBoard.get(i);
+
+            for (int j = 0; j < tetronimoToStripOfRectangles.tetronimoRectangleArrayList.size(); j++)
+            {
+                TetronimoRectangle tetronimoRectangle = tetronimoToStripOfRectangles.tetronimoRectangleArrayList.get(j);
+                tetronimoRectanglesOnTheBoardArrayList.add(tetronimoRectangle);
+            }
+        }
+
+        //Check if current tetronimo rectange will collide with a tetronimo rectange on the board
+
+        return false;
+    }
+
+
+
+
 }

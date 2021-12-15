@@ -1,6 +1,7 @@
 package views;
 
 import controllers.TetrisController;
+import controllers.TetronimoRectangleGrid;
 import controllers.tetrisGameLogic;
 import models.Tetronimo;
 import wheelsunh.users.*;
@@ -84,17 +85,13 @@ public class TetrisBoard implements KeyListener
 
         while(boardGameLogic.gameScore <= 100)
         {
-            //TESTING RECTANGLE
-            Rectangle rectangle = new Rectangle();
-            rectangle.setLocation(100, 80);
-            rectangle.setSize(5, 5);
+
 
             this.tetronimo = this.CONTROLLER.getNextTetromino();
-            boardGameLogic.addTetronimosToArrayList(tetronimo);
+            CONTROLLER.addTetronimoRectanglesMovingToGrid(tetronimo);
 
             //Feed this.tetronimo into below
-            while( !this.CONTROLLER.hasTetronimoLanded(this.tetronimo, boardGameLogic.tetronimosOnTheBoard) &&
-                    !boardGameLogic.isColliding(this.tetronimo, boardGameLogic.tetronimosOnTheBoard) )
+            while( !this.CONTROLLER.hasTetronimoLanded(this.tetronimo))
             {
 
                 if(boardGameLogic.pauseGame != true)
@@ -104,9 +101,10 @@ public class TetrisBoard implements KeyListener
 
                     // *** TESTING OUTPUT ***
 
-                    System.out.println("The top edge of r1 is : " + tetronimo.r1.getTopEdge());
-                    System.out.println("The lowest tetronimo rectange edge is: " + tetronimo.collision_getLowestTetronimoRectangleEdge(tetronimo.tetronimoRectangleArrayList));
-                    System.out.println("The highest tetronimo rectange edge is: " + tetronimo.collision_getHighestTetronimoRectangleEdge(tetronimo.tetronimoRectangleArrayList));
+                    //System.out.println("The top edge of r1 is : " + (tetronimo.r1.getBounds().y + 2));
+                    System.out.println("The middle of r1 is: " + tetronimo.r1.getCenter());
+
+
                 }
                 Utilities.sleep( 1000 );
             }

@@ -51,11 +51,22 @@ public class tetrisGameLogic
         }
     }
 
-    public void checkIfTetronimoTouchingOtherTetronimos(Tetronimo tetronimoToTest)
+    public void checkIfTetronimoTouchingOtherTetronimos(Tetronimo tetronimoToTest, ArrayList<Tetronimo> tetronimosOnTheBoard)
     {
+        int tetronimosIntersected = 0;
+
         for (int i = 0; i < tetronimosOnTheBoard.size(); i++)
         {
-
+            Tetronimo tetronimo = tetronimosOnTheBoard.get(i);
+            if (tetronimoToTest.boundsIntersects(tetronimo))
+            {
+                System.out.println("The falling tetronimo interesected with: " + tetronimo);
+                tetronimosIntersected++;
+                if (tetronimosIntersected > 2)
+                {
+                    System.out.println("Intersected with two tetronimos!");
+                }
+            }
         }
     }
 
@@ -71,6 +82,7 @@ public class tetrisGameLogic
 
     public boolean isCollidingWithOtherTetronimos(Tetronimo tetronimo,  ArrayList<Tetronimo> tetronimosOnTheBoard)
     {
+        //Check collision from the bottom of the falling tetronimo
         for (int i = 0; i < tetronimosOnTheBoard.size(); i++)
         {
             Tetronimo tetronimoFromArrayList = tetronimosOnTheBoard.get(i);
@@ -80,6 +92,21 @@ public class tetrisGameLogic
                 return true;
             }
         }
+
+        //Check collision from the right of the falling tetronimo
+        for (int i = 0; i < tetronimosOnTheBoard.size(); i++)
+        {
+            Tetronimo tetronimoFromArrayList = tetronimosOnTheBoard.get(i);
+            if (tetronimo.collision_getLowestTetronimoRectangleEdge(tetronimo.tetronimoRectangleArrayList)
+                    == tetronimoFromArrayList.collision_getHighestTetronimoRectangleEdge(tetronimoFromArrayList.tetronimoRectangleArrayList))
+            {
+                return true;
+            }
+        }
+
+
+
+
         return false;
     }
 
