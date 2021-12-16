@@ -108,8 +108,6 @@ public class TetrisBoard implements KeyListener
                     this.tetronimo.setLocation( this.tetronimo.getXLocation(), this.tetronimo.getYLocation() + Tetronimo.SIZE );
                     Utilities.sleep( 5 );
 
-                    // *** TESTING OUTPUT ***
-                    System.out.println("The following tetronimo is dropping: " + tetronimo);
                 }
                 Utilities.sleep( 1000 );
             }

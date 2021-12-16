@@ -48,7 +48,7 @@ public class TetrisController
     public void loadTetronimosArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
     {
         //Load the tetronimos into the array list
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 10; i++)
         {
             Tetronimo tetronimo = getRandomTetronimo(getRandomNumberForTetronimo());
             tetronimosForTheLevel.add(tetronimo);
@@ -150,7 +150,13 @@ public class TetrisController
         if (tetronimo.collision_getBottomEdgeOfTetronimo() == 460)
         {
             addTetronimoRectanglesLandedToGrid(tetronimo);
-            displayTetronimoRectanglesOnTheBoardThatHaveLanded();
+
+            //Check to see if grid row is full
+            if (isGridRowFull())
+            {
+                System.out.println("The grid row is full - now to call a function to update row with color");
+            }
+
             return true;
         }
 
@@ -158,6 +164,13 @@ public class TetrisController
         if(isTetronimoRectangleBelow(tetronimo))
         {
             addTetronimoRectanglesLandedToGrid(tetronimo);
+
+            //Check to see if grid row is full
+            if (isGridRowFull())
+            {
+                System.out.println("The grid row is full - now to call a function to update row with color");
+            }
+
             return true;
         }
 
@@ -167,6 +180,57 @@ public class TetrisController
 
     }
 
+    public boolean isGridRowFull()
+    {
+        int tetronimosInRow = 0;
+
+        //This pass goes row by row
+        for (int i = 0; i < 24; i++)
+        {
+            //This pass check each column in the row
+            for (int j = 0; j < 10; j++)
+            {
+                if (landedGridOfTetronimoRectangles[i][j] != null)
+                {
+                    System.out.println("There is a tetronimo rectangle at: [" + i + "] " + "[" + j + "]");
+                    tetronimosInRow++;
+                    System.out.println("There are: " + tetronimosInRow + " in row " + i);
+                    if (tetronimosInRow == 9)
+                    {
+                        System.out.println("Row " + i + " is full!");
+                        return true;
+                    }
+                }
+            }
+            tetronimosInRow = 0;
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+    public void changeFilledRowColor(TetronimoRectangle tetronimoRectangle)
+    {
+        int rowPosition = tetronimoRectangle.getCenterY() / 20;
+        //Loop through row and change the color
+        for (int k = 0; k < 10; k++)
+        {
+            landedGridOfTetronimoRectangles[rowPosition][k].setColor(tetronimoRectangle.getColor());
+        }
+    }
+
+
+    /**
+     * Method used to track the tetronimo moving down the grid in relation to the other
+     * tetronimos that have landed on the grid
+     * @param tetronimoMoving
+     */
     public void addTetronimoRectanglesMovingToGrid(Tetronimo tetronimoMoving)
     {
         for (int i = 0; i < tetronimoMoving.tetronimoRectangleArrayList.size(); i++)
