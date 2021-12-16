@@ -1,7 +1,6 @@
 package views;
 
 import controllers.TetrisController;
-import controllers.TetronimoRectangleGrid;
 import controllers.tetrisGameLogic;
 import models.Tetronimo;
 import wheelsunh.users.*;
@@ -41,6 +40,9 @@ public class TetrisBoard implements KeyListener
 
     tetrisGameLogic boardGameLogic;
 
+    private Rectangle nextTetronimoDisplay;
+    private TextBox nextTetronimoTextBox;
+
     /**
      * Constructor to initialize the board
      *
@@ -51,8 +53,11 @@ public class TetrisBoard implements KeyListener
         frame.addKeyListener( this );
         this.CONTROLLER = new TetrisController( this );
         this.boardGameLogic = new tetrisGameLogic();
-
         this.buildBoard();
+
+        this.nextTetronimoTextBox = new TextBox("Next Tetronimo");
+        this.nextTetronimoTextBox.setLocation(400, 100);
+
 
         this.run();
     }
@@ -82,37 +87,56 @@ public class TetrisBoard implements KeyListener
      */
     public void run()
     {
+        //Get level of game and load tetronimosForLevel appropriately
+        CONTROLLER.loadTetronimosArrayList(CONTROLLER.tetronimosDroppingArrayList);
 
-        while(boardGameLogic.gameScore <= 100)
+        while(boardGameLogic.gameLevel <= 10)
         {
 
 
-            this.tetronimo = this.CONTROLLER.getNextTetromino();
+            Utilities.sleep( 1000 );
+
+            //Create the tetronimo that was displayed and now add to grid
+            this.tetronimo = this.CONTROLLER.getNextTetrominoFromArrayList(CONTROLLER.tetronimosDroppingArrayList);
             CONTROLLER.addTetronimoRectanglesMovingToGrid(tetronimo);
+
+
+
+            //Think of tetronimo as bullets dropping through a belt feeder - tetronimo at [0] drops into level (from prefilled arraylist)
+            //[1] drops to 1 and is displayed
+            //Array list is checked for null pointers - if array list is clear - aka all tetronimos have dropped (level is complete and increment level)
 
             //Feed this.tetronimo into below
             while( !this.CONTROLLER.hasTetronimoLanded(this.tetronimo))
             {
-
                 if(boardGameLogic.pauseGame != true)
                 {
                     this.tetronimo.setLocation( this.tetronimo.getXLocation(), this.tetronimo.getYLocation() + Tetronimo.SIZE );
                     Utilities.sleep( 5 );
 
                     // *** TESTING OUTPUT ***
-
-                    CONTROLLER.displayTetronimoRectanglesOnTheBoardThatAreMoving();
-
-
+                    if (CONTROLLER.tetronimosDroppingArrayList.get(0) == null)
+                    {
+                        System.out.println("The arraylist is clear");
+                    }
+                    else
+                    {
+                        System.out.println("In the arrayList is: " + CONTROLLER.tetronimosDroppingArrayList.get(0));
+                    }
                 }
+
                 Utilities.sleep( 1000 );
+
+
             }
+            //Remove tetronimo from array list
+            //CONTROLLER.removeTetronimosFromArrayList(CONTROLLER.tetronimosDroppingArrayList);
+            Utilities.sleep( 500 );
 
             //***TESTING AREA***
             System.out.println("The tetronimo landed - need to spawn a new one");
-            boardGameLogic.gameScore += 10;
+            boardGameLogic.gameLevel++;
             System.out.println(boardGameLogic.gameScore);
-            //boardGameLogic.displayTetronimosInArrayList();
 
 
             /*
@@ -169,13 +193,13 @@ public class TetrisBoard implements KeyListener
                 }
                 break;
             case 37:
-                if( this.tetronimo.collisions_getLeftEdgeOfTetronimo() > 40 )
+                if( this.tetronimo.collisions_getLeftEdgeOfTetronimo() > 40 && !(CONTROLLER.isTetronimoRectangleToTheLeft(this.tetronimo)))
                 {
                     this.tetronimo.shiftLeft();
                 }
                 break;
             case 39:
-                if( this.tetronimo.collision_getRightEdgeOfTetronimo() < 220)
+                if( this.tetronimo.collision_getRightEdgeOfTetronimo() < 220 && !(CONTROLLER.isTetronimoRectangleToTheRight(this.tetronimo)))
                 {
                     this.tetronimo.shiftRight();
                 }

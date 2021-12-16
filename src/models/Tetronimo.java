@@ -65,6 +65,7 @@ public abstract class Tetronimo extends ShapeGroup
         tetronimoRectangleArrayList.add(r4);
     }
 
+
     /**
      * Increments the rotation of the tetronimo, other classes need to override this to provide the full functionality
      */
@@ -94,6 +95,14 @@ public abstract class Tetronimo extends ShapeGroup
      * @return
      */
     public int getCurrentRotation() {return this.curRotation;}
+
+    public Tetronimo copy(Tetronimo tetronimoToCopy){
+        this.r1 = tetronimoToCopy.r1;
+        this.r2 = tetronimoToCopy.r2;
+        this.r3 = tetronimoToCopy.r3;
+        this.r4 = tetronimoToCopy.r4;
+        return tetronimoToCopy;
+    };
 
     /**
      * COLLISION LOGIC
@@ -265,7 +274,6 @@ public abstract class Tetronimo extends ShapeGroup
 
         return false;
     }
-
 
 
 

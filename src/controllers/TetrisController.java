@@ -3,6 +3,7 @@ package controllers;
 import models.*;
 import views.TetrisBoard;
 
+import javax.swing.text.Utilities;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -16,7 +17,8 @@ import java.util.Random;
 public class TetrisController
 {
     private final TetrisBoard TETRIS_BOARD;
-    public ArrayList<Tetronimo> tetronimosOnTheBoardThatHaveLanded = new ArrayList<>();
+    public ArrayList<Tetronimo> tetronimosDroppingArrayList = new ArrayList<>();
+    public ArrayList<Tetronimo> tetronimosDisplayedArrayList = new ArrayList<>();
     public ArrayList<TetronimoRectangle> tetronimoRectangleArrayList = new ArrayList<>();
     public TetronimoRectangle[][] landedGridOfTetronimoRectangles = new TetronimoRectangle[24][10];
     public TetronimoRectangle[][] movingGridOfTetronimoRectangles = new TetronimoRectangle[24][10];
@@ -30,31 +32,50 @@ public class TetrisController
         this.TETRIS_BOARD = tetrisBoard;
     }
 
-    /**
-     * Randomly chooses the next tetronimo and returns it
-     * @return The next tetronimo to be played
-     */
-    public Tetronimo getNextTetromino()
+
+
+    public void createTetronimoDisplayList(ArrayList<Tetronimo> tetronimosDisplayedArrayList)
     {
-        Tetronimo tetronimo;
+        Tetronimo tetronimoToDisplay1 = getRandomTetronimo(getRandomNumberForTetronimo());
+        Tetronimo tetronimoToDisplay2 = getRandomTetronimo(getRandomNumberForTetronimo());
 
-        //Generate random tetronimo
-        tetronimo = getRandomTetronimo();
+        tetronimosDisplayedArrayList.add(tetronimoToDisplay1);
+        tetronimosDisplayedArrayList.add(tetronimoToDisplay2);
 
-        //Display next tetronimo upcoming in window
-
-        tetronimo.setLocation( 40 + (5 * Tetronimo.SIZE), 0 );
-
-        return tetronimo;
+        tetronimosDisplayedArrayList.get(0).setLocation(400, 150);
+        tetronimosDisplayedArrayList.get(1).setLocation(500, 150);
     }
 
-    public Tetronimo getRandomTetronimo()
+    public void loadTetronimosArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
     {
-        Tetronimo tetronimo = null;
+        for(int i = 0; i < 20; i++)
+        {
+            Tetronimo tetronimo = getRandomTetronimo(getRandomNumberForTetronimo());
+            tetronimosForTheLevel.add(tetronimo);
+            tetronimosForTheLevel.get(i).setLocation(400, 150);
+        }
+    }
+
+    /**
+     * Method to get random number
+     * @return random number that was generated
+     */
+    public int getRandomNumberForTetronimo()
+    {
         Random rand = new Random();
         int upperBound = 7;
         int int_random = rand.nextInt(upperBound);
+        return int_random;
+    }
 
+    /**
+     * Method to create a random tetronimo based on the
+     * @param int_random number that is passed in
+     * @return a random number is returned
+     */
+    public Tetronimo getRandomTetronimo(int int_random)
+    {
+        Tetronimo tetronimo = null;
         switch (int_random)
         {
             case 0:
@@ -81,6 +102,49 @@ public class TetrisController
         }
         return tetronimo;
     }
+
+
+    /**
+     * Randomly chooses the next tetronimo and returns it
+     * @return The next tetronimo to be played
+     */
+    public Tetronimo getNextTetrominoFromArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
+    {
+        removeTetronimosFromArrayList(tetronimosForTheLevel);
+        Tetronimo tetronimo = tetronimosForTheLevel.get(0);
+
+        tetronimo.setLocation( 40 + (5 * Tetronimo.SIZE), 0 );
+
+        return tetronimo;
+    }
+
+    public void removeTetronimosFromArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
+    {
+        int newXLoc = tetronimosForTheLevel.get(0).getXLocation();
+        int newYLoc = tetronimosForTheLevel.get(0).getYLocation();
+        tetronimosForTheLevel.get(1).setLocation(newXLoc, newYLoc);
+        tetronimosForTheLevel.remove(0);
+    }
+
+
+
+
+    public Tetronimo test_GetNextTetronimoForBoard(ArrayList<Tetronimo> tetronimosBeingDisplayed)
+    {
+        Tetronimo tetronimoToPutOnBoard = tetronimosBeingDisplayed.get(0);
+        tetronimoToPutOnBoard.setLocation( 40 + (5 * Tetronimo.SIZE), 0 );
+        return tetronimoToPutOnBoard;
+    }
+
+    public void displayNextTetronimo(ArrayList<Tetronimo> tetronimosBeingDisplayed, Tetronimo tetronimoToDisplay)
+    {
+        this.tetronimosDroppingArrayList.add(tetronimoToDisplay);
+        tetronimosBeingDisplayed.get(0).setLocation(400, 150);
+    }
+
+
+
+
 
     /**
      * Method to determine if the tetronimo has landed (INCOMPLETE)
@@ -122,6 +186,9 @@ public class TetrisController
         }
     }
 
+    /**
+     * Method to display the tetronimo rectangles currently moving down the board.
+     */
     public void displayTetronimoRectanglesOnTheBoardThatAreMoving()
     {
         for (int i = 0; i < 24; i++)
@@ -151,11 +218,63 @@ public class TetrisController
             TetronimoRectangle tetronimoRectangle = tetronimoMoving.tetronimoRectangleArrayList.get(i);
             int colPosition = (tetronimoRectangle.getCenterX() - 40) / 20;
             int rowPosition = tetronimoRectangle.getCenterY() / 20;
-            System.out.println("The tetronimo rectangles are at [" + rowPosition + "] [" + colPosition + "]");
-            System.out.println("Next row down is [" + (rowPosition + 1) + "] [" + colPosition + "]");
+
+            //Testing
+            //System.out.println("The tetronimo rectangles are at [" + rowPosition + "] [" + colPosition + "]");
+            //System.out.println("Next row down is [" + (rowPosition + 1) + "] [" + colPosition + "]");
 
             //Now check if there are any tetronimo rectangles currently on the board that have landed in the next row down
             if (landedGridOfTetronimoRectangles[(rowPosition + 1)][colPosition] != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method to track the tetronimo rectangles moving down the board and to detect
+     * if any of the tetronimo rectangles collide with tetronimo rectangles already on
+     * the board to the left of the falling tetronimo
+     * @param tetronimoMoving
+     * @return
+     */
+    public boolean isTetronimoRectangleToTheLeft(Tetronimo tetronimoMoving)
+    {
+        //Get the tetronimo rectangles making up the tetronimo
+        for (int i = 0; i < tetronimoMoving.tetronimoRectangleArrayList.size(); i++)
+        {
+            TetronimoRectangle tetronimoRectangle = tetronimoMoving.tetronimoRectangleArrayList.get(i);
+            int colPosition = (tetronimoRectangle.getCenterX() - 40) / 20;
+            int rowPosition = tetronimoRectangle.getCenterY() / 20;
+
+            //Now check if there are any tetronimo rectangles currently on the board that have landed in the next row down
+            if (landedGridOfTetronimoRectangles[rowPosition][(colPosition - 1)] != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method to track the tetronimo rectangles moving down the board and to detect
+     * if any of the tetronimo rectangles collide with tetronimo rectangles already on
+     * the board to the right of the falling tetronimo
+     * @param tetronimoMoving
+     * @return
+     */
+    public boolean isTetronimoRectangleToTheRight(Tetronimo tetronimoMoving)
+    {
+        //Get the tetronimo rectangles making up the tetronimo
+        for (int i = 0; i < tetronimoMoving.tetronimoRectangleArrayList.size(); i++)
+        {
+            TetronimoRectangle tetronimoRectangle = tetronimoMoving.tetronimoRectangleArrayList.get(i);
+            int colPosition = (tetronimoRectangle.getCenterX() - 40) / 20;
+            int rowPosition = tetronimoRectangle.getCenterY() / 20;
+
+            //Now check if there are any tetronimo rectangles currently on the board that have landed in the next row down
+            if (landedGridOfTetronimoRectangles[rowPosition][(colPosition + 1)] != null)
             {
                 return true;
             }
