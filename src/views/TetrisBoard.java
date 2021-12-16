@@ -40,8 +40,8 @@ public class TetrisBoard implements KeyListener
 
     tetrisGameLogic boardGameLogic;
 
-    private Rectangle nextTetronimoDisplay;
     private TextBox nextTetronimoTextBox;
+    private TextBox gameScoreTextBox;
 
     /**
      * Constructor to initialize the board
@@ -57,6 +57,9 @@ public class TetrisBoard implements KeyListener
 
         this.nextTetronimoTextBox = new TextBox("Next Tetronimo");
         this.nextTetronimoTextBox.setLocation(400, 100);
+
+        this.gameScoreTextBox = new TextBox("Game Score");
+        this.gameScoreTextBox.setLocation(400, 20);
 
 
         this.run();
@@ -88,26 +91,17 @@ public class TetrisBoard implements KeyListener
     public void run()
     {
         //Get level of game and load tetronimosForLevel appropriately
-        CONTROLLER.loadTetronimosArrayList(CONTROLLER.tetronimosDroppingArrayList);
+        CONTROLLER.loadTetronimosArrayList(CONTROLLER.tetronimosForTheLevel);
 
-        while(boardGameLogic.gameLevel <= 10)
+        while(!CONTROLLER.tetronimosForTheLevel.isEmpty())
         {
-
-
             Utilities.sleep( 1000 );
 
             //Create the tetronimo that was displayed and now add to grid
-            this.tetronimo = this.CONTROLLER.getNextTetrominoFromArrayList(CONTROLLER.tetronimosDroppingArrayList);
+            this.tetronimo = this.CONTROLLER.getNextTetrominoFromArrayList(CONTROLLER.tetronimosForTheLevel);
             CONTROLLER.addTetronimoRectanglesMovingToGrid(tetronimo);
 
-
-
-            //Think of tetronimo as bullets dropping through a belt feeder - tetronimo at [0] drops into level (from prefilled arraylist)
-            //[1] drops to 1 and is displayed
-            //Array list is checked for null pointers - if array list is clear - aka all tetronimos have dropped (level is complete and increment level)
-
-            //Feed this.tetronimo into below
-            while( !this.CONTROLLER.hasTetronimoLanded(this.tetronimo))
+            while( !this.CONTROLLER.hasTetronimoLanded(this.tetronimo) && this.tetronimo != null)
             {
                 if(boardGameLogic.pauseGame != true)
                 {
@@ -115,26 +109,18 @@ public class TetrisBoard implements KeyListener
                     Utilities.sleep( 5 );
 
                     // *** TESTING OUTPUT ***
-                    if (CONTROLLER.tetronimosDroppingArrayList.get(0) == null)
-                    {
-                        System.out.println("The arraylist is clear");
-                    }
-                    else
-                    {
-                        System.out.println("In the arrayList is: " + CONTROLLER.tetronimosDroppingArrayList.get(0));
-                    }
+                    System.out.println("The following tetronimo is dropping: " + tetronimo);
                 }
-
                 Utilities.sleep( 1000 );
-
-
             }
-            //Remove tetronimo from array list
-            //CONTROLLER.removeTetronimosFromArrayList(CONTROLLER.tetronimosDroppingArrayList);
+            //At this point the tetronimo has landed and need to check if the row is full
+
             Utilities.sleep( 500 );
 
             //***TESTING AREA***
             System.out.println("The tetronimo landed - need to spawn a new one");
+            CONTROLLER.removeTetronimosFromArrayList(CONTROLLER.tetronimosForTheLevel);
+            CONTROLLER.test_DisplayTetronimosIntheArrayList(CONTROLLER.tetronimosForTheLevel);
             boardGameLogic.gameLevel++;
             System.out.println(boardGameLogic.gameScore);
 
@@ -145,6 +131,7 @@ public class TetrisBoard implements KeyListener
              */
             this.tetronimo = null;
         }
+        System.out.println("Congratulations!  The level has been completed!");
 
     }
 

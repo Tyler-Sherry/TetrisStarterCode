@@ -7,6 +7,7 @@ public class tetrisGameLogic
 {
     public static int gameScore = 0;
     public int gameLevel = 1;
+    public int gamePass = 0;
     public boolean pauseGame = false;
 
 

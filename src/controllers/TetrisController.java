@@ -3,7 +3,6 @@ package controllers;
 import models.*;
 import views.TetrisBoard;
 
-import javax.swing.text.Utilities;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,7 +16,7 @@ import java.util.Random;
 public class TetrisController
 {
     private final TetrisBoard TETRIS_BOARD;
-    public ArrayList<Tetronimo> tetronimosDroppingArrayList = new ArrayList<>();
+    public ArrayList<Tetronimo> tetronimosForTheLevel = new ArrayList<>();
     public ArrayList<Tetronimo> tetronimosDisplayedArrayList = new ArrayList<>();
     public ArrayList<TetronimoRectangle> tetronimoRectangleArrayList = new ArrayList<>();
     public TetronimoRectangle[][] landedGridOfTetronimoRectangles = new TetronimoRectangle[24][10];
@@ -32,27 +31,35 @@ public class TetrisController
         this.TETRIS_BOARD = tetrisBoard;
     }
 
-
-
-    public void createTetronimoDisplayList(ArrayList<Tetronimo> tetronimosDisplayedArrayList)
+    //TEST - NEED TO REMOVE
+    public void test_DisplayTetronimosIntheArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
     {
-        Tetronimo tetronimoToDisplay1 = getRandomTetronimo(getRandomNumberForTetronimo());
-        Tetronimo tetronimoToDisplay2 = getRandomTetronimo(getRandomNumberForTetronimo());
-
-        tetronimosDisplayedArrayList.add(tetronimoToDisplay1);
-        tetronimosDisplayedArrayList.add(tetronimoToDisplay2);
-
-        tetronimosDisplayedArrayList.get(0).setLocation(400, 150);
-        tetronimosDisplayedArrayList.get(1).setLocation(500, 150);
+        System.out.println("The following tetronimos are still in the array list");
+        for (int i = 0; i < tetronimosForTheLevel.size(); i++)
+        {
+            System.out.print(tetronimosForTheLevel + ", ");
+        }
     }
 
+    /**
+     * Method to load all the tetronimos that will be spawning for the level
+     * @param tetronimosForTheLevel
+     */
     public void loadTetronimosArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
     {
-        for(int i = 0; i < 20; i++)
+        //Load the tetronimos into the array list
+        for(int i = 0; i < 2; i++)
         {
             Tetronimo tetronimo = getRandomTetronimo(getRandomNumberForTetronimo());
             tetronimosForTheLevel.add(tetronimo);
             tetronimosForTheLevel.get(i).setLocation(400, 150);
+        }
+
+        //Now space out tetronimos in the array list
+        for (int i = 1; i < tetronimosForTheLevel.size(); i++)
+        {
+            int Y_locationOfTetronimoInFront = tetronimosForTheLevel.get(i - 1).getYLocation();
+            tetronimosForTheLevel.get(i).setLocation(400, Y_locationOfTetronimoInFront + 100);
         }
     }
 
@@ -103,47 +110,32 @@ public class TetrisController
         return tetronimo;
     }
 
-
     /**
      * Randomly chooses the next tetronimo and returns it
      * @return The next tetronimo to be played
      */
     public Tetronimo getNextTetrominoFromArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
     {
-        removeTetronimosFromArrayList(tetronimosForTheLevel);
         Tetronimo tetronimo = tetronimosForTheLevel.get(0);
 
         tetronimo.setLocation( 40 + (5 * Tetronimo.SIZE), 0 );
-
         return tetronimo;
+
     }
 
+    /**
+     * Method to remove the tetronimos from the level array list of tetronimos once
+     * the tetronimo has landed
+     * @param tetronimosForTheLevel
+     */
     public void removeTetronimosFromArrayList(ArrayList<Tetronimo> tetronimosForTheLevel)
     {
-        int newXLoc = tetronimosForTheLevel.get(0).getXLocation();
-        int newYLoc = tetronimosForTheLevel.get(0).getYLocation();
-        tetronimosForTheLevel.get(1).setLocation(newXLoc, newYLoc);
         tetronimosForTheLevel.remove(0);
+        for (int i = 0; i < tetronimosForTheLevel.size(); i++)
+        {
+            tetronimosForTheLevel.get(i).setLocation(tetronimosForTheLevel.get(i).getXLocation(), tetronimosForTheLevel.get(i).getYLocation() - 100);
+        }
     }
-
-
-
-
-    public Tetronimo test_GetNextTetronimoForBoard(ArrayList<Tetronimo> tetronimosBeingDisplayed)
-    {
-        Tetronimo tetronimoToPutOnBoard = tetronimosBeingDisplayed.get(0);
-        tetronimoToPutOnBoard.setLocation( 40 + (5 * Tetronimo.SIZE), 0 );
-        return tetronimoToPutOnBoard;
-    }
-
-    public void displayNextTetronimo(ArrayList<Tetronimo> tetronimosBeingDisplayed, Tetronimo tetronimoToDisplay)
-    {
-        this.tetronimosDroppingArrayList.add(tetronimoToDisplay);
-        tetronimosBeingDisplayed.get(0).setLocation(400, 150);
-    }
-
-
-
 
 
     /**
@@ -281,7 +273,6 @@ public class TetrisController
         }
         return false;
     }
-
 
     /**
      * Method to keep track of the tetronimo rectangles that have landed on the board
